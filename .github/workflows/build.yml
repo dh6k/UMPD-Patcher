@@ -1,0 +1,80 @@
+name: UMAPATCHER
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_apk_url:
+        description: 'Base APK Download URL'
+        required: true
+        default: ''
+      split_apk_url:
+        description: 'Split APK Download URL (arm64-v8a)'
+        required: true
+        default: ''
+      libmain_so_url:
+        description: 'libmain.so Patch URL'
+        required: true
+        default: ''
+      keystore_url:
+        description: 'Debug keystore URL'
+        required: true
+        default: 'https://github.com/kairusds/UmaPatcher-Edge/raw/refs/heads/main/app/debug.keystore'
+      apk_version:
+        description: 'Original APK Version (e.g., 2.2.0)'
+        required: true
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+
+      - name: Extract libmain.so Version
+        id: extract_version
+        run: |
+          URL="${{ github.event.inputs.libmain_so_url }}"
+          VERSION=$(echo "$URL" | grep -oP 'releases/download/\K[^/]+')
+          USERNAME=$(echo "$URL" | grep -oP 'github\.com/\K[^/]+')
+          echo "LIBMAIN_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "LIBMAIN_USER=$USERNAME" >> $GITHUB_ENV
+
+      - name: Run UMAPATCHER Script
+        run: |
+          python upatcher.py \
+            --baseapk_dlink ${{ github.event.inputs.base_apk_url }} \
+            --splitapk_dlink ${{ github.event.inputs.split_apk_url }} \
+            --libmain_url ${{ github.event.inputs.libmain_so_url }} \
+            --keystore_url ${{ github.event.inputs.keystore_url }}
+
+      - name: Upload Patched XAPK to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: umamusume.xapk
+          tag_name: v${{ github.event.inputs.apk_version }}
+          body: |
+            This is an automatic release of the patched Umamusume XAPK.
+            
+            APK Version: **${{ github.event.inputs.apk_version }}**
+            
+            - Patched with the latest `libmain.so` from **${{ env.LIBMAIN_USER }}**, version **${{ env.LIBMAIN_VERSION }}**.
+            - Supports Arm64-v8a architecture.
+            
+            **Sources:**
+            - Base APK: [Download](${{ github.event.inputs.base_apk_url }})
+            - Split APK (arm64-v8a): [Download](${{ github.event.inputs.split_apk_url }})
+            - Patched libmain.so: [Download](${{ github.event.inputs.libmain_so_url }})
+            - Keystore: [Download](${{ github.event.inputs.keystore_url }})
+
+      - name: Upload Patched XAPK
+        uses: actions/upload-artifact@v4
+        with:
+          name: uma-xapk-patch
+          path: umamusume.xapk

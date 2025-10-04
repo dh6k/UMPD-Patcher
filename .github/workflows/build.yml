@@ -14,7 +14,7 @@ on:
       libmain_so_url:
         description: 'libmain.so Patch URL'
         required: true
-        default: 'https://github.com/kairusds/Hachimi-Edge/releases/latest/download/libmain-arm64-v8a.so'
+        default: ''
       keystore_url:
         description: 'Debug keystore URL'
         required: true
@@ -37,7 +37,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
 
-    - name: Extract libmain.so Version
+      
+      - name: Extract libmain.so Version
         id: extract_version
         run: |
           URL="${{ github.event.inputs.libmain_so_url }}"

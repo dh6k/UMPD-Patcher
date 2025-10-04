@@ -14,7 +14,7 @@ on:
       libmain_so_url:
         description: 'libmain.so Patch URL'
         required: true
-        default: ''
+        default: 'https://github.com/kairusds/Hachimi-Edge/releases/latest/download/libmain-arm64-v8a.so'
       keystore_url:
         description: 'Debug keystore URL'
         required: true
@@ -37,12 +37,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
 
-      - name: Extract libmain.so Version
+    - name: Extract libmain.so Version
         id: extract_version
         run: |
           URL="${{ github.event.inputs.libmain_so_url }}"
-          VERSION=$(echo "$URL" | grep -oP 'releases/download/\K[^/]+')
           USERNAME=$(echo "$URL" | grep -oP 'github\.com/\K[^/]+')
+          REPO=$(echo "$URL" | grep -oP 'github\.com/[^/]+/\K[^/]+')
+          
+          # Lấy tag của latest release từ GitHub API
+          if echo "$URL" | grep -q "/latest/download/"; then
+            VERSION=$(curl -s "https://api.github.com/repos/$USERNAME/$REPO/releases/latest" | jq -r '.tag_name')
+          else
+            VERSION=$(echo "$URL" | grep -oP 'releases/download/\K[^/]+')
+          fi
+          
           echo "LIBMAIN_VERSION=$VERSION" >> $GITHUB_ENV
           echo "LIBMAIN_USER=$USERNAME" >> $GITHUB_ENV
 

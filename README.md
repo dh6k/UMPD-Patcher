@@ -14,3 +14,5 @@ Compatible with latest vesion of the honse game. And the game now has full-scree
 * Fill in the base apk link, split apk link from [qoopy](https://qoopy.leadrdrk.com/) (id is **6172**). And the version strings in the "version" section also from that site.
 
 * Sit back and relax. Wait for about 3 minutes, than head to the **Releases** page to download the file.
+
+### Or you can just download the file in the **Releases** page of this repo for convenience. If i'm busy at the moment, dont hesitate and do the steps above for self-build.

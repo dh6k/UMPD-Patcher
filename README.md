@@ -9,7 +9,7 @@ Compatible with latest vesion of the honse game. And the game now has full-scree
 
 * Go to Actions tab
 
-* Click on UMAPATCHER, than clock on the **Run workflow** button with dropdown icon.
+* Click on **UMAPATCHER** in the left column, than click on the **Run workflow** button with dropdown icon.
 
 * Fill in the base apk link, split apk link from [qoopy](https://qoopy.leadrdrk.com/) (id is **6172**). And the version strings in the "version" section also from that site.
 

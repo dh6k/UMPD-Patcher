@@ -1,5 +1,5 @@
 # UMPD-Patcher
-my self building repo without relying on Uma-patcher. So basically no need to use Shizuku, and can be easily built completely online.
+my self building fork without relying on Uma-patcher. So basically no need to use Shizuku, and can be easily built completely online.
 
 The source is completely safe, as i'm using it daily drive.
 Compatible with latest vesion of the honse game. And the game now has full-screen mode in AOSP which doesn't present in official sources sadly.
